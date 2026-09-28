@@ -3,7 +3,7 @@ import { FinanceContext } from '../../context/FinanceContext';
 import { Trash2, Plus, CheckCircle, Circle, AlertTriangle, X, Printer } from 'lucide-react';
 
 export const GroceriesView = () => {
-  const { groceries, groceriesCategories, budgets, addGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries, addTransaction, appSettings, cajas, contributors } = useContext(FinanceContext);
+  const { groceries, groceriesCategories, budgets, addGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries, addTransaction, appSettings, cajas, contributors, inventory, addInventoryItem, updateInventoryItem, deleteInventoryItem } = useContext(FinanceContext);
   
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -20,6 +20,7 @@ export const GroceriesView = () => {
   
   const [singleItemToPay, setSingleItemToPay] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [viewMode, setViewMode] = useState('mercado'); // 'mercado' or 'inventario'
 
   useEffect(() => {
     if (!selectedCaja && availableCajas.length > 0) {
@@ -116,6 +117,24 @@ export const GroceriesView = () => {
       return;
     }
 
+    // Identificar los items comprados para agregarlos al inventario
+    const boughtItems = singleItemToPay ? [singleItemToPay] : groceries.filter(i => i.checked);
+    boughtItems.forEach(item => {
+      // Ignorar impuestos o fees
+      if (item.name.includes("IMPUESTO") || item.name.includes("FEE")) return;
+      
+      const existing = (inventory || []).find(inv => inv.name.toLowerCase() === item.name.toLowerCase());
+      if (existing) {
+        updateInventoryItem(existing.id, { quantity: (existing.quantity || 1) + (item.quantity || 1) });
+      } else {
+        addInventoryItem({
+          name: item.name,
+          category: item.category,
+          quantity: item.quantity || 1
+        });
+      }
+    });
+
     // Registrar como gasto pagado. addTransaction ya descuenta de la caja si isPaid es true
     addTransaction({
       type: 'expense',
@@ -153,9 +172,30 @@ export const GroceriesView = () => {
 
   return (
     <div className="section-card" id="printable-groceries">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
-        <h2 className="section-title" style={{ margin: 0 }}>Lista de Mercado</h2>
-        <div style={{ display: 'flex', gap: '10px' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
+        <button 
+          onClick={() => setViewMode('mercado')}
+          style={{ 
+            background: 'none', border: 'none', fontSize: '1.1rem', fontWeight: viewMode === 'mercado' ? 'bold' : 'normal', 
+            color: viewMode === 'mercado' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px' 
+          }}>
+          Lista de Compras
+        </button>
+        <button 
+          onClick={() => setViewMode('inventario')}
+          style={{ 
+            background: 'none', border: 'none', fontSize: '1.1rem', fontWeight: viewMode === 'inventario' ? 'bold' : 'normal', 
+            color: viewMode === 'inventario' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px' 
+          }}>
+          Inventario de Despensa
+        </button>
+      </div>
+
+      {viewMode === 'mercado' && (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+            <h2 className="section-title" style={{ margin: 0 }}>Lista de Mercado</h2>
+            <div style={{ display: 'flex', gap: '10px' }}>
           <button 
             onClick={handlePrint}
             className="no-print"
@@ -436,6 +476,51 @@ export const GroceriesView = () => {
           ));
         })()}
       </div>
+        </>
+      )}
+
+      {viewMode === 'inventario' && (
+        <div>
+          <h2 className="section-title" style={{ margin: '0 0 20px 0' }}>Inventario de Despensa</h2>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '20px' }}>Los artículos que pagues en la "Lista de Compras" se sumarán automáticamente aquí. También puedes sumar o restar cantidades a medida que los consumes.</p>
+          
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {(!inventory || inventory.length === 0) ? (
+              <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', padding: '20px 0' }}>Tu inventario está vacío. Paga artículos en tu Lista de Mercado para sumarlos aquí.</p>
+            ) : (
+              (inventory || []).map(item => (
+                <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '15px', padding: '15px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name} <span style={{fontSize: '0.75rem', backgroundColor: 'var(--color-bg-deep)', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-text-secondary)', marginLeft: '6px'}}>{item.category}</span></div>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
+                      En despensa: <strong style={{color: 'var(--color-text-main)'}}>{item.quantity}</strong>
+                    </div>
+                  </div>
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <button 
+                      onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
+                      style={{ width: '35px', height: '35px', borderRadius: '50%', backgroundColor: 'var(--color-bg-deep)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      -
+                    </button>
+                    <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
+                    <button 
+                      onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
+                      style={{ width: '35px', height: '35px', borderRadius: '50%', backgroundColor: 'var(--color-bg-deep)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+                    >
+                      +
+                    </button>
+                    <button onClick={() => deleteInventoryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '5px', marginLeft: '10px' }}>
+                      <Trash2 size={20} />
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
