@@ -218,69 +218,54 @@ export const Dashboard = () => {
       </div>
       
       {/* KPI Grid — 5 cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '20px', marginBottom: '30px' }}>
         {/* Balance Neto */}
-        <div style={{
-          background: currentStats.balance >= 0 
-            ? 'linear-gradient(135deg, #eff6ff 0%, #bfdbfe 100%)' 
-            : 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-          borderRadius: '12px', padding: '14px',
-          border: currentStats.balance >= 0 ? '1px solid #93c5fd' : '1px solid #fcd34d'
-        }}>
-          <p style={{ fontSize: '0.7rem', fontWeight: '600', color: currentStats.balance >= 0 ? '#2563eb' : '#d97706', margin: '0 0 4px 0', textTransform: 'uppercase' }}>Balance Neto</p>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: currentStats.balance >= 0 ? '#1e40af' : '#92400e' }}>{renderAmount(currentStats.balance)}</p>
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <p style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-secondary)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Balance Neto</p>
+          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: currentStats.balance >= 0 ? '#0f172a' : '#ef4444' }}>
+            {renderAmount(currentStats.balance)}
+          </p>
+          <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Disponible tras gastos</div>
         </div>
 
         {/* Ingresos */}
-        <div style={{
-          background: 'linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)',
-          borderRadius: '12px', padding: '14px', border: '1px solid #a7f3d0'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: '0.7rem', fontWeight: '600', color: '#059669', margin: '0 0 4px 0', textTransform: 'uppercase' }}>Ingresos</p>
-            <span style={{ fontSize: '0.65rem', padding: '1px 6px', borderRadius: '999px', background: incomeChange.type === 'positive' ? '#dcfce7' : '#fef2f2', color: incomeChange.type === 'positive' ? '#16a34a' : '#dc2626' }}>
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <p style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-secondary)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Ingresos</p>
+            <span style={{ fontSize: '0.75rem', fontWeight: '600', padding: '2px 8px', borderRadius: '999px', background: incomeChange.type === 'positive' ? '#dcfce7' : '#f1f5f9', color: incomeChange.type === 'positive' ? '#16a34a' : '#64748b' }}>
               {incomeChange.text}
             </span>
           </div>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#065f46' }}>{renderAmount(currentStats.income)}</p>
+          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#10b981' }}>{renderAmount(currentStats.income)}</p>
         </div>
 
         {/* Gastos */}
-        <div style={{
-          background: 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)',
-          borderRadius: '12px', padding: '14px', border: '1px solid #fca5a5'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ fontSize: '0.7rem', fontWeight: '600', color: '#dc2626', margin: '0 0 4px 0', textTransform: 'uppercase' }}>Gastos</p>
-            <span style={{ fontSize: '0.65rem', padding: '1px 6px', borderRadius: '999px', background: expenseChange.type === 'positive' ? '#fef2f2' : '#dcfce7', color: expenseChange.type === 'positive' ? '#dc2626' : '#16a34a' }}>
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <p style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--color-text-secondary)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Gastos</p>
+            <span style={{ fontSize: '0.75rem', fontWeight: '600', padding: '2px 8px', borderRadius: '999px', background: expenseChange.type === 'positive' ? '#fee2e2' : '#dcfce7', color: expenseChange.type === 'positive' ? '#ef4444' : '#16a34a' }}>
               {expenseChange.text}
             </span>
           </div>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#991b1b' }}>{renderAmount(currentStats.expense)}</p>
+          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#f43f5e' }}>{renderAmount(currentStats.expense)}</p>
         </div>
 
         {/* Deudas Pendientes */}
-        <div style={{
-          background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
-          borderRadius: '12px', padding: '14px', border: '1px solid #fcd34d'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-            <AlertCircle size={12} color="#d97706" />
-            <p style={{ fontSize: '0.7rem', fontWeight: '600', color: '#d97706', margin: 0, textTransform: 'uppercase' }}>Deudas</p>
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderLeft: '4px solid #f59e0b' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <AlertCircle size={14} color="#d97706" />
+            <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#d97706', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Por Pagar</p>
           </div>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#92400e' }}>{renderAmount(totalPendingDebts)}</p>
+          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#b45309' }}>{renderAmount(totalPendingDebts)}</p>
         </div>
 
         {/* Patrimonio Total */}
-        <div style={{
-          background: 'linear-gradient(135deg, #f0fdf4 0%, #bbf7d0 100%)',
-          borderRadius: '12px', padding: '14px', border: '1px solid #86efac'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-            <Shield size={12} color="#16a34a" />
-            <p style={{ fontSize: '0.7rem', fontWeight: '600', color: '#16a34a', margin: 0, textTransform: 'uppercase' }}>Patrimonio</p>
+        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderLeft: '4px solid #3b82f6' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Shield size={14} color="#3b82f6" />
+            <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#3b82f6', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Patrimonio</p>
           </div>
-          <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: 0, color: '#14532d' }}>{renderAmount(totalPatrimony)}</p>
+          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#1e40af' }}>{renderAmount(totalPatrimony)}</p>
         </div>
       </div>
 
