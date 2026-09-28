@@ -19,6 +19,7 @@ export const GroceriesView = () => {
   const [itemContributor, setItemContributor] = useState('Común');
   
   const [singleItemToPay, setSingleItemToPay] = useState(null);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     if (!selectedCaja && availableCajas.length > 0) {
@@ -45,20 +46,14 @@ export const GroceriesView = () => {
     }
   }, [groceriesCategories, category]);
 
-  // Clean up phantom items (items whose category was deleted)
-  useEffect(() => {
-    const validCategories = groceriesCategories.map(c => c.name);
-    const phantomItems = groceries.filter(g => !validCategories.includes(g.category));
-    if (phantomItems.length > 0) {
-      phantomItems.forEach(item => deleteGroceryItem(item.id));
-    }
-  }, [groceries, groceriesCategories, deleteGroceryItem]);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name.trim() || !price || isNaN(price)) return;
     
     const parsedPrice = parseFloat(price);
+    const parsedQuantity = parseInt(quantity, 10) || 1;
     const usdPrice = currency === 'VES' ? parsedPrice / rate : parsedPrice;
 
     addGroceryItem({ 
@@ -67,12 +62,14 @@ export const GroceriesView = () => {
       originalPrice: parsedPrice,
       originalCurrency: currency,
       category,
-      contributor: itemContributor
+      contributor: itemContributor,
+      quantity: parsedQuantity
     });
     
     setActiveCategory(category); // <--- Switch to the tab where the item was just added!
     setName('');
     setPrice('');
+    setQuantity(1);
   };
 
   const groupedGroceries = useMemo(() => {
@@ -94,19 +91,19 @@ export const GroceriesView = () => {
 
   const calculateTotal = (items) => {
     if (!items) return 0;
-    return items.reduce((sum, item) => sum + item.price, 0);
+    return items.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
   };
 
   const calculateTotalBought = (items) => {
     if (!items) return 0;
-    return items.filter(i => i.checked).reduce((sum, item) => sum + item.price, 0);
+    return items.filter(i => i.checked).reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
   };
 
   const totalGeneral = calculateTotal(groceries);
   const totalBoughtGeneral = calculateTotalBought(groceries);
 
   const confirmRegisterPurchase = () => {
-    const amount = singleItemToPay ? parseFloat(singleItemToPay.price) : parseFloat(totalBoughtGeneral);
+    const amount = singleItemToPay ? parseFloat(singleItemToPay.price * (singleItemToPay.quantity || 1)) : parseFloat(totalBoughtGeneral);
     
     if (amount <= 0) {
       alert("El monto debe ser mayor a 0.");
@@ -202,7 +199,7 @@ export const GroceriesView = () => {
               <h3 style={{ margin: 0 }}>Registrar Pago de Mercado</h3>
               <button onClick={() => { setShowPayModal(false); setSingleItemToPay(null); }} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20}/></button>
             </div>
-            <p>Monto a pagar: <strong>{renderAmount(singleItemToPay ? singleItemToPay.price : totalBoughtGeneral)}</strong></p>
+            <p>Monto a pagar: <strong>{renderAmount(singleItemToPay ? (singleItemToPay.price * (singleItemToPay.quantity || 1)) : totalBoughtGeneral)}</strong></p>
             
             <div style={{ marginBottom: '15px' }}>
               <label style={{ display: 'block', marginBottom: '5px' }}>¿A qué presupuesto se le asigna?</label>
@@ -288,12 +285,22 @@ export const GroceriesView = () => {
             type="number" 
             value={price}
             onChange={(e) => setPrice(e.target.value)}
-            placeholder="Precio" 
+            placeholder="Precio Unitario" 
             className="form-input"
             step="0.01"
             min="0"
             required 
             style={{ flex: '1 1 120px', minWidth: '120px' }}
+          />
+          <input 
+            type="number" 
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="Cant." 
+            className="form-input"
+            min="1"
+            required 
+            style={{ width: '80px', padding: '10px', flexGrow: 0 }}
           />
           <select 
             value={category} 
@@ -381,9 +388,11 @@ export const GroceriesView = () => {
               
               <div style={{ flex: 1, textDecoration: item.checked ? 'line-through' : 'none', opacity: item.checked ? 0.6 : 1 }}>
                 <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name}</div>
-                <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2px' }}>
-                  <span>Ref: {renderAmount(item.price)}</span>
-                  <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>👤 {item.contributor || 'Común'}</span>
+                <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' }}>
+                  <span>Ref: {renderAmount(item.price)} c/u</span>
+                  <span>| Cant: {item.quantity || 1}</span>
+                  <span style={{ fontWeight: 'bold', color: 'var(--color-text-main)' }}>| Total: {renderAmount(item.price * (item.quantity || 1))}</span>
+                  <span style={{ color: 'var(--color-primary)', fontWeight: '600' }}>| 👤 {item.contributor || 'Común'}</span>
                 </div>
               </div>
               
