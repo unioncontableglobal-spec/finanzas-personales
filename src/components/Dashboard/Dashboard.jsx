@@ -211,14 +211,7 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      <div className="accounts-summary-grid">
-        {Object.entries(savings).map(([name, balance]) => (
-          <div key={name} className="account-mini-card" style={{ background: getAccountStyle(name) }}>
-            <h4>{name}</h4>
-            <div className="account-balance">{renderAmount(balance)}</div>
-          </div>
-        ))}
-      </div>
+
       
       {/* KPI Grid — 5 cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '20px', marginBottom: '30px' }}>
@@ -262,14 +255,7 @@ export const Dashboard = () => {
           <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#b45309' }}>{renderAmount(totalPendingDebts)}</p>
         </div>
 
-        {/* Patrimonio Total */}
-        <div className="card" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px', borderLeft: '4px solid #3b82f6' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Shield size={14} color="#3b82f6" />
-            <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#3b82f6', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Patrimonio</p>
-          </div>
-          <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#1e40af' }}>{renderAmount(totalPatrimony)}</p>
-        </div>
+
       </div>
 
       <div className="dashboard-grid" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
