@@ -126,6 +126,7 @@ body {
 /* Formularios y Calendarios */
 .modern-input, .form-input, input[type="text"], input[type="number"], input[type="date"], input[type="month"], select {
   width: 100%;
+  max-width: 100%;
   padding: 0.75rem 1rem;
   font-family: var(--font-family);
   font-size: 16px; /* 16px min size avoids auto-zoom in iOS Safari */
@@ -142,6 +143,23 @@ body {
 .modern-input:focus, .form-input:focus, input:focus, select:focus {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px var(--color-secondary-light);
+}
+
+/* Responsive Typography */
+.page-title {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 800;
+  color: var(--color-text-main);
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  color: var(--color-text-secondary);
+}
+
+.column-title {
+  font-size: clamp(1.1rem, 4vw, 1.3rem) !important;
 }
 
 /* Personalizar icono de calendario nativo */

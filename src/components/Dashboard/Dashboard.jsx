@@ -60,9 +60,24 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
             />
           </Pie>
           <Tooltip formatter={(value) => renderAmount(value)} />
-          <Legend verticalAlign="bottom" height={36} iconType="circle" />
         </PieChart>
       </ResponsiveContainer>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        gap: '8px 16px',
+        marginTop: '10px',
+        padding: '0 10px'
+      }}>
+        {data.map((entry, index) => (
+          <div key={`legend-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: COLORS[index % COLORS.length] }}></div>
+            <span style={{ color: 'var(--color-text-secondary)' }}>{entry.name}</span>
+          </div>
+        ))}
+      </div>
+      
     </div>
   );
 };
