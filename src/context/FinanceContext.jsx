@@ -62,7 +62,7 @@ export const FinanceProvider = ({ children }) => {
           if (data.savings) setSavings(data.savings);
           if (data.contributors) setContributors(data.contributors);
           if (data.groceries) setGroceries(data.groceries);
-          if (data.inventory) setInventory(data.inventory);
+          if (data.appSettings && data.appSettings.inventory) setInventory(data.appSettings.inventory);
           if (data.projects) setProjects(data.projects);
           if (data.categories && data.categories.length > 0) setCategories(data.categories);
           if (data.appSettings) setAppSettings(data.appSettings);
@@ -124,7 +124,7 @@ export const FinanceProvider = ({ children }) => {
           setSavings(loadedSavings);
           if (data.contributors) setContributors(data.contributors);
           if (data.groceries) setGroceries(data.groceries);
-          if (data.inventory) setInventory(data.inventory);
+          if (data.appSettings && data.appSettings.inventory) setInventory(data.appSettings.inventory);
           if (data.projects) setProjects(data.projects);
           if (data.categories && data.categories.length > 0) setCategories(data.categories);
           if (data.appSettings) setAppSettings(data.appSettings);
@@ -138,7 +138,7 @@ export const FinanceProvider = ({ children }) => {
             savings: loadedSavings,
             contributors: data.contributors || contributors,
             groceries: data.groceries || groceries,
-            inventory: data.inventory || inventory,
+            inventory: (data.appSettings && data.appSettings.inventory) || inventory,
             projects: data.projects || projects,
             categories: data.categories || categories,
             appSettings: data.appSettings || appSettings,
@@ -160,7 +160,7 @@ export const FinanceProvider = ({ children }) => {
     let finalType = type;
     let finalData = data;
 
-    if (['update_groceries', 'update_groceriesCategories', 'update_inventory', 'update_projects', 'update_cajas'].includes(type)) {
+    if (['update_groceries', 'update_groceriesCategories', 'update_projects', 'update_cajas'].includes(type)) {
       finalType = 'update_all';
       finalData = { [type.replace('update_', '')]: data };
     }
@@ -512,19 +512,19 @@ export const FinanceProvider = ({ children }) => {
     const newItem = { ...item, id: generateId() };
     const newInventory = [...inventory, newItem];
     setInventory(newInventory);
-    syncData('update_inventory', newInventory);
+    updateAppSettings({ inventory: newInventory });
   };
 
   const updateInventoryItem = (id, updates) => {
     const newInventory = inventory.map(i => i.id === id ? { ...i, ...updates } : i);
     setInventory(newInventory);
-    syncData('update_inventory', newInventory);
+    updateAppSettings({ inventory: newInventory });
   };
 
   const deleteInventoryItem = (id) => {
     const newInventory = inventory.filter(i => i.id !== id);
     setInventory(newInventory);
-    syncData('update_inventory', newInventory);
+    updateAppSettings({ inventory: newInventory });
   };
 
   // --- Projects ---
