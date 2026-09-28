@@ -113,12 +113,12 @@ export const SettingsView = () => {
           Actualiza aquí la tasa del día para que el sistema convierta automáticamente tus ingresos y gastos en Bolívares.
         </p>
         
-        <form onSubmit={handleUpdateExchangeRate} style={{ display: 'flex', gap: '10px' }}>
-          <div style={{ position: 'relative', flex: 1 }}>
+        <form onSubmit={handleUpdateExchangeRate} style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
+          <div style={{ position: 'relative', flex: '1 1 120px' }}>
             <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-secondary)', fontWeight: 'bold' }}>BCV</span>
             <input 
-              type="number" 
-              step="0.01"
+              type="text" 
+              inputMode="decimal"
               value={newExchangeRate}
               onChange={(e) => setNewExchangeRate(e.target.value)}
               placeholder="Tasa BCV (Ej. 43.15)"
@@ -127,11 +127,11 @@ export const SettingsView = () => {
               style={{ width: '100%', paddingLeft: '55px', boxSizing: 'border-box' }}
             />
           </div>
-          <div style={{ position: 'relative', flex: 1 }}>
+          <div style={{ position: 'relative', flex: '1 1 120px' }}>
             <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-secondary)', fontWeight: 'bold' }}>USDT</span>
             <input 
-              type="number" 
-              step="0.01"
+              type="text" 
+              inputMode="decimal"
               value={newUsdtRate}
               onChange={(e) => setNewUsdtRate(e.target.value)}
               placeholder="Tasa USDT (Ej. 44.20)"
@@ -140,7 +140,7 @@ export const SettingsView = () => {
               style={{ width: '100%', paddingLeft: '65px', boxSizing: 'border-box' }}
             />
           </div>
-          <button type="submit" style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '0 20px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '500' }}>
+          <button type="submit" style={{ flex: '1 1 100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', padding: '12px 20px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: '600' }}>
             <Check size={18} /> Guardar Tasas
           </button>
         </form>

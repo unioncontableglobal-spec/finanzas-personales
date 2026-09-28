@@ -167,9 +167,20 @@ export const Dashboard = () => {
     .filter(t => t.type === 'expense' && new Date(t.date).getMonth() === filterMonth && new Date(t.date).getFullYear() === filterYear)
     .reduce((acc, t) => {
       const person = t.contributor || 'Sin asignar / Común';
-      acc[person] = (acc[person] || 0) + parseFloat(t.amount);
+      if (!acc[person]) acc[person] = { total: 0, paid: 0, pending: 0 };
+      
+      const totalAmt = parseFloat(t.amount || 0);
+      const paidAmt = t.isPaid ? totalAmt : (t.payments || []).reduce((s, p) => s + parseFloat(p.amount || 0), 0);
+      const pendingAmt = Math.max(0, totalAmt - paidAmt);
+
+      acc[person].total += totalAmt;
+      acc[person].paid += paidAmt;
+      acc[person].pending += pendingAmt;
       return acc;
     }, {});
+
+  const totalExpensePaid = Object.values(expensesByContributor).reduce((s, v) => s + v.paid, 0);
+  const totalExpensePending = Object.values(expensesByContributor).reduce((s, v) => s + v.pending, 0);
 
   const handlePrint = () => window.print();
 
@@ -270,35 +281,58 @@ export const Dashboard = () => {
         </div>
 
         <div className="card contributor-card" style={{ flex: '1 1 300px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-          <h3 style={{ margin: '0 0 20px 0', color: 'var(--color-text-main)' }}>Gastos por Responsable</h3>
+          <h3 style={{ margin: '0 0 20px 0', color: 'var(--color-text-main)' }}>Gastos por Responsable (Pagado vs Deuda)</h3>
           {Object.keys(expensesByContributor).length === 0 ? (
             <p className="empty-msg">No hay gastos asignados a responsables este mes.</p>
           ) : (
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {Object.entries(expensesByContributor).map(([person, total]) => {
-                const pct = currentStats.expense > 0 ? (total / currentStats.expense * 100) : 0;
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {Object.entries(expensesByContributor).map(([person, data]) => {
+                const { total, paid, pending } = data;
+                const paidPct = total > 0 ? (paid / total * 100) : 0;
+                
                 return (
                   <li key={person}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                      <span style={{ fontWeight: '500', color: 'var(--color-text-main)', fontSize: '0.9rem' }}>{person}</span>
-                      <span style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '0.9rem' }}>
-                        {renderAmount(total)} <span style={{ color: 'var(--color-text-secondary)', fontWeight: 'normal', fontSize: '0.75rem' }}>({pct.toFixed(0)}%)</span>
+                      <span style={{ fontWeight: '600', color: 'var(--color-text-main)', fontSize: '0.95rem' }}>{person}</span>
+                      <span style={{ color: 'var(--color-text-main)', fontWeight: 'bold', fontSize: '0.95rem' }}>
+                        {renderAmount(total)}
                       </span>
                     </div>
-                    <div style={{ height: '6px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '999px', overflow: 'hidden' }}>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '6px' }}>
+                      <span style={{ color: '#10b981' }}>Pagado: {renderAmount(paid)}</span>
+                      <span style={{ color: '#ef4444' }}>Deuda: {renderAmount(pending)}</span>
+                    </div>
+
+                    <div style={{ height: '8px', backgroundColor: '#fee2e2', borderRadius: '999px', overflow: 'hidden', display: 'flex' }}>
                       <div style={{
-                        height: '100%', borderRadius: '999px',
-                        width: `${pct}%`,
-                        background: 'linear-gradient(90deg, #ef4444, #f97316)',
+                        height: '100%',
+                        width: `${paidPct}%`,
+                        backgroundColor: '#10b981',
                         transition: 'width 0.4s ease'
                       }} />
                     </div>
                   </li>
                 );
               })}
-              <li style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0 0 0', marginTop: '4px', borderTop: '2px dashed var(--color-border)' }}>
-                <span style={{ fontWeight: 'bold', color: 'var(--color-text-secondary)' }}>Gasto Total</span>
-                <span style={{ color: '#ef4444', fontWeight: 'bold' }}>{renderAmount(currentStats.expense)}</span>
+              
+              <li style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '16px 0 0 0', marginTop: '8px', borderTop: '2px dashed var(--color-border)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: 'bold', color: 'var(--color-text-secondary)' }}>Total Gastos del Mes</span>
+                  <span style={{ color: 'var(--color-text-main)', fontWeight: 'bold' }}>{renderAmount(currentStats.expense)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
+                  <span style={{ color: '#10b981', fontWeight: '600' }}>Total Pagado: {renderAmount(totalExpensePaid)} ({(currentStats.expense > 0 ? (totalExpensePaid/currentStats.expense*100) : 0).toFixed(0)}%)</span>
+                  <span style={{ color: '#ef4444', fontWeight: '600' }}>Total Deuda: {renderAmount(totalExpensePending)}</span>
+                </div>
+                <div style={{ height: '12px', backgroundColor: '#fee2e2', borderRadius: '999px', overflow: 'hidden', display: 'flex', marginTop: '4px' }}>
+                  <div style={{
+                    height: '100%',
+                    width: `${currentStats.expense > 0 ? (totalExpensePaid/currentStats.expense*100) : 0}%`,
+                    backgroundColor: '#10b981',
+                    transition: 'width 0.4s ease'
+                  }} />
+                </div>
               </li>
             </ul>
           )}
