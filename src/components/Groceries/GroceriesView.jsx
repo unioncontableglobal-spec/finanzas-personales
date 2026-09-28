@@ -1,6 +1,6 @@
 import React, { useContext, useState, useMemo, useEffect } from 'react';
 import { FinanceContext } from '../../context/FinanceContext';
-import { Trash2, Plus, CheckCircle, Circle, AlertTriangle, X, Printer } from 'lucide-react';
+import { Trash2, Plus, CheckCircle, Circle, AlertTriangle, X, Printer, Package } from 'lucide-react';
 
 export const GroceriesView = () => {
   const { groceries, groceriesCategories, budgets, addGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries, addTransaction, appSettings, cajas, contributors, inventory, addInventoryItem, updateInventoryItem, deleteInventoryItem } = useContext(FinanceContext);
@@ -480,45 +480,71 @@ export const GroceriesView = () => {
       )}
 
       {viewMode === 'inventario' && (
-        <div>
-          <h2 className="section-title" style={{ margin: '0 0 20px 0' }}>Inventario de Despensa</h2>
-          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '20px' }}>Los artículos que pagues en la "Lista de Compras" se sumarán automáticamente aquí. También puedes sumar o restar cantidades a medida que los consumes.</p>
+        <div style={{ animation: 'fadeIn 0.3s ease' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+            <h2 className="section-title" style={{ margin: 0 }}>Inventario de Despensa</h2>
+            <div style={{ backgroundColor: 'var(--color-primary)', color: 'white', padding: '5px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 'bold' }}>
+              {(inventory || []).reduce((acc, curr) => acc + (curr.quantity || 0), 0)} Items en total
+            </div>
+          </div>
+          <p style={{ color: 'var(--color-text-secondary)', marginBottom: '25px', fontSize: '0.95rem' }}>Los artículos que pagues en la "Lista de Compras" se sumarán automáticamente aquí. Mantén tu stock al día sumando o restando cantidades.</p>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {(!inventory || inventory.length === 0) ? (
-              <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', padding: '20px 0' }}>Tu inventario está vacío. Paga artículos en tu Lista de Mercado para sumarlos aquí.</p>
-            ) : (
-              (inventory || []).map(item => (
-                <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '15px', padding: '15px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '8px' }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name} <span style={{fontSize: '0.75rem', backgroundColor: 'var(--color-bg-deep)', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-text-secondary)', marginLeft: '6px'}}>{item.category}</span></div>
-                    <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-                      En despensa: <strong style={{color: 'var(--color-text-main)'}}>{item.quantity}</strong>
-                    </div>
+          {(!inventory || inventory.length === 0) ? (
+            <div style={{ backgroundColor: 'var(--color-bg-surface)', border: '1px dashed var(--color-border)', borderRadius: '12px', padding: '40px 20px', textAlign: 'center' }}>
+              <Package size={40} color="var(--color-text-secondary)" style={{ marginBottom: '15px', opacity: 0.5 }} />
+              <h3 style={{ color: 'var(--color-text-main)', margin: '0 0 10px 0' }}>Tu inventario está vacío</h3>
+              <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Paga artículos en tu Lista de Mercado para sumarlos aquí automáticamente.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', alignItems: 'start' }}>
+              {Object.entries((inventory || []).reduce((acc, item) => {
+                const cat = item.category || 'Otros';
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(item);
+                return acc;
+              }, {})).sort(([a], [b]) => a.localeCompare(b)).map(([catName, items]) => (
+                <div key={catName} style={{ backgroundColor: 'var(--color-bg-surface)', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 6px rgba(0,0,0,0.02)', border: '1px solid var(--color-border)' }}>
+                  <div style={{ backgroundColor: 'var(--color-bg-deep)', padding: '12px 15px', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h3 style={{ margin: 0, fontSize: '1rem', color: 'var(--color-text-main)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {catName === 'Comida' ? '🛒' : catName === 'Proteína' ? '🥩' : catName === 'Limpieza' ? '🧼' : catName === 'Salud' ? '💊' : catName === 'Cosmética' ? '🧴' : '📦'} {catName}
+                    </h3>
+                    <span style={{ backgroundColor: 'var(--color-primary)', color: 'white', fontSize: '0.75rem', padding: '2px 8px', borderRadius: '10px', fontWeight: 'bold' }}>
+                      {items.length} prod.
+                    </span>
                   </div>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <button 
-                      onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
-                      style={{ width: '35px', height: '35px', borderRadius: '50%', backgroundColor: 'var(--color-bg-deep)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      -
-                    </button>
-                    <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center' }}>{item.quantity}</span>
-                    <button 
-                      onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
-                      style={{ width: '35px', height: '35px', borderRadius: '50%', backgroundColor: 'var(--color-bg-deep)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-                    >
-                      +
-                    </button>
-                    <button onClick={() => deleteInventoryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '5px', marginLeft: '10px' }}>
-                      <Trash2 size={20} />
-                    </button>
+                  <div style={{ padding: '10px' }}>
+                    {items.sort((a, b) => a.name.localeCompare(b.name)).map((item, index) => (
+                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 5px', borderBottom: index < items.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
+                        <div style={{ flex: 1, paddingRight: '10px' }}>
+                          <div style={{ fontWeight: '600', color: 'var(--color-text-main)', fontSize: '0.9rem', lineHeight: '1.2' }}>{item.name}</div>
+                          {item.quantity <= 0 && <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px', fontWeight: 'bold' }}>Agotado</div>}
+                        </div>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'var(--color-bg-deep)', padding: '4px', borderRadius: '8px' }}>
+                          <button 
+                            onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
+                            style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)' }}
+                          >
+                            -
+                          </button>
+                          <span style={{ fontWeight: 'bold', minWidth: '24px', textAlign: 'center', color: item.quantity > 0 ? 'var(--color-text-main)' : '#ef4444', fontSize: '0.95rem' }}>{item.quantity}</span>
+                          <button 
+                            onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
+                            style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)' }}
+                          >
+                            +
+                          </button>
+                          <button onClick={() => deleteInventoryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', marginLeft: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
