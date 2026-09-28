@@ -32,52 +32,44 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
     return <div className="no-data-chart">No hay gastos este mes</div>;
   }
 
+  // Sort data descending by value
+  data.sort((a, b) => b.value - a.value);
+
   return (
-    <div style={{ width: '100%', height: 350 }}>
-      <ResponsiveContainer>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={80}
-            outerRadius={110}
-            fill="#8884d8"
-            paddingAngle={2}
-            dataKey="value"
-            stroke="none"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-            <Label 
-              content={({ viewBox: { cx, cy } }) => (
-                <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central">
-                  <tspan x={cx} dy="-0.5em" className="donut-center-subtext">Total</tspan>
-                  <tspan x={cx} dy="1.5em" className="donut-center-text">{renderAmount(totalExpense)}</tspan>
-                </text>
-              )}
-            />
-          </Pie>
-          <Tooltip formatter={(value) => renderAmount(value)} />
-        </PieChart>
-      </ResponsiveContainer>
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        gap: '8px 16px',
-        marginTop: '10px',
-        padding: '0 10px'
-      }}>
-        {data.map((entry, index) => (
-          <div key={`legend-${index}`} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}>
-            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: COLORS[index % COLORS.length] }}></div>
-            <span style={{ color: 'var(--color-text-secondary)' }}>{entry.name}</span>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {data.map((entry, index) => {
+        const pct = totalExpense > 0 ? (entry.value / totalExpense) * 100 : 0;
+        const color = COLORS[index % COLORS.length];
+        
+        return (
+          <div key={`cat-${index}`} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color }}></div>
+                <span style={{ fontWeight: '600', color: 'var(--color-text-main)', fontSize: '0.95rem' }}>{entry.name}</span>
+              </div>
+              <div style={{ textAlign: 'right' }}>
+                <span style={{ color: 'var(--color-text-main)', fontWeight: '700', fontSize: '0.95rem' }}>
+                  {renderAmount(entry.value)}
+                </span>
+                <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.8rem', marginLeft: '6px' }}>
+                  ({pct.toFixed(0)}%)
+                </span>
+              </div>
+            </div>
+            
+            <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '999px', overflow: 'hidden' }}>
+              <div style={{
+                height: '100%',
+                width: `${pct}%`,
+                backgroundColor: color,
+                borderRadius: '999px',
+                transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}></div>
+            </div>
           </div>
-        ))}
-      </div>
-      
+        );
+      })}
     </div>
   );
 };
