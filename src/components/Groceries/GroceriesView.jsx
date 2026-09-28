@@ -517,7 +517,27 @@ export const GroceriesView = () => {
                       <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 5px', borderBottom: index < items.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
                         <div style={{ flex: 1, paddingRight: '10px' }}>
                           <div style={{ fontWeight: '600', color: 'var(--color-text-main)', fontSize: '0.9rem', lineHeight: '1.2' }}>{item.name}</div>
-                          {item.quantity <= 0 && <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px', fontWeight: 'bold' }}>Agotado</div>}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                            <select 
+                              value={item.category || 'Otros'}
+                              onChange={(e) => updateInventoryItem(item.id, { category: e.target.value })}
+                              style={{
+                                fontSize: '0.75rem',
+                                padding: '2px 4px',
+                                borderRadius: '4px',
+                                backgroundColor: 'var(--color-bg-deep)',
+                                border: '1px solid var(--color-border)',
+                                color: 'var(--color-text-secondary)',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {(groceriesCategories || []).map(cat => (
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                              ))}
+                              {!groceriesCategories?.some(c => c.name === 'Otros') && <option value="Otros">Otros</option>}
+                            </select>
+                            {item.quantity <= 0 && <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 'bold' }}>Agotado</span>}
+                          </div>
                         </div>
                         
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'var(--color-bg-deep)', padding: '4px', borderRadius: '8px' }}>
