@@ -42,7 +42,7 @@ export const GroceriesView = () => {
   useEffect(() => {
     if (groceriesCategories.length > 0 && !category) {
       setCategory(groceriesCategories[0].name);
-      setActiveCategory(groceriesCategories[0].name);
+      setActiveCategory('Todas');
     }
   }, [groceriesCategories, category]);
 
@@ -340,6 +340,22 @@ export const GroceriesView = () => {
 
       {/* Navegación por Categorías (Tabs) */}
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', paddingBottom: '10px', marginBottom: '20px' }}>
+        <button
+          onClick={() => setActiveCategory('Todas')}
+          style={{
+            padding: '6px 14px',
+            fontSize: '0.85rem',
+            borderRadius: '999px',
+            whiteSpace: 'nowrap',
+            backgroundColor: activeCategory === 'Todas' ? 'var(--color-primary)' : 'var(--color-bg-surface)',
+            color: activeCategory === 'Todas' ? '#ffffff' : 'var(--color-text-secondary)',
+            border: 'none',
+            cursor: 'pointer',
+            fontWeight: '500'
+          }}
+        >
+          Todas ({groceries.length})
+        </button>
         {Object.keys(groupedGroceries).map(catName => {
           const count = groupedGroceries[catName].length;
           return (
@@ -369,14 +385,18 @@ export const GroceriesView = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <h3 style={{ margin: 0, color: 'var(--color-text-main)' }}>{activeCategory}</h3>
           <span style={{ color: 'var(--color-text-secondary)', fontSize: '0.875rem' }}>
-            Subtotal: {renderAmount(calculateTotal(groupedGroceries[activeCategory] || []))}
+            Subtotal: {renderAmount(calculateTotal(activeCategory === 'Todas' ? groceries : (groupedGroceries[activeCategory] || [])))}
           </span>
         </div>
         
-        {(!activeCategory || !groupedGroceries[activeCategory] || groupedGroceries[activeCategory].length === 0) ? (
-          <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', padding: '20px 0' }}>No hay artículos en esta categoría.</p>
-        ) : (
-          groupedGroceries[activeCategory].map(item => (
+        {(() => {
+          const itemsToRender = activeCategory === 'Todas' ? groceries : (groupedGroceries[activeCategory] || []);
+          
+          if (!itemsToRender || itemsToRender.length === 0) {
+            return <p style={{ color: 'var(--color-text-secondary)', textAlign: 'center', padding: '20px 0' }}>No hay artículos para mostrar.</p>;
+          }
+          
+          return itemsToRender.map(item => (
             <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '8px', borderLeft: item.checked ? '4px solid #22c55e' : '4px solid transparent' }}>
               <button 
                 onClick={() => toggleGroceryItem(item.id)}
@@ -387,7 +407,7 @@ export const GroceriesView = () => {
               </button>
               
               <div style={{ flex: 1, textDecoration: item.checked ? 'line-through' : 'none', opacity: item.checked ? 0.6 : 1 }}>
-                <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name}</div>
+                <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name} <span style={{fontSize: '0.75rem', backgroundColor: 'var(--color-bg-deep)', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-text-secondary)', marginLeft: '6px'}}>{item.category}</span></div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' }}>
                   <span>Ref: {renderAmount(item.price)} c/u</span>
                   <span>| Cant: {item.quantity || 1}</span>
@@ -413,8 +433,8 @@ export const GroceriesView = () => {
                 </button>
               </div>
             </div>
-          ))
-        )}
+          ));
+        })()}
       </div>
     </div>
   );
