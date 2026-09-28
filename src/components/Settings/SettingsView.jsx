@@ -32,12 +32,19 @@ export const SettingsView = () => {
 
   const handleUpdateExchangeRate = (e) => {
     e.preventDefault();
-    if (newExchangeRate > 0 && newUsdtRate > 0) {
+    
+    const parseRate = (val) => parseFloat(String(val).replace(',', '.'));
+    const parsedExchange = parseRate(newExchangeRate);
+    const parsedUsdt = parseRate(newUsdtRate);
+
+    if (parsedExchange > 0 && parsedUsdt > 0) {
       updateAppSettings({ 
-        exchangeRate: parseFloat(newExchangeRate),
-        usdtRate: parseFloat(newUsdtRate)
+        exchangeRate: parsedExchange,
+        usdtRate: parsedUsdt
       });
       alert("Tasas actualizadas correctamente.");
+    } else {
+      alert("Por favor ingrese tasas válidas (use punto o coma decimal).");
     }
   };
 

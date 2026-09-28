@@ -19,17 +19,25 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
   });
 
   const data = expensesThisMonth.reduce((acc, curr) => {
-    const existing = acc.find(item => item.name === curr.category);
-    if (existing) {
-      existing.value += parseFloat(curr.amount);
-    } else {
-      acc.push({ name: curr.category, value: parseFloat(curr.amount) });
+    const totalAmt = parseFloat(curr.amount || 0);
+    const paidAmt = curr.isPaid ? totalAmt : (curr.payments || []).reduce((s, p) => s + parseFloat(p.amount || 0), 0);
+    const pendingAmt = Math.max(0, totalAmt - paidAmt);
+
+    if (pendingAmt > 0) {
+      const existing = acc.find(item => item.name === curr.category);
+      if (existing) {
+        existing.value += pendingAmt;
+      } else {
+        acc.push({ name: curr.category, value: pendingAmt });
+      }
     }
     return acc;
   }, []);
 
+  const totalPendingInCategories = data.reduce((sum, item) => sum + item.value, 0);
+
   if (data.length === 0) {
-    return <div className="no-data-chart">No hay gastos este mes</div>;
+    return <div className="no-data-chart">No hay deudas pendientes por categoría este mes</div>;
   }
 
   // Sort data descending by value
@@ -38,7 +46,7 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {data.map((entry, index) => {
-        const pct = totalExpense > 0 ? (entry.value / totalExpense) * 100 : 0;
+        const pct = totalPendingInCategories > 0 ? (entry.value / totalPendingInCategories) * 100 : 0;
         const color = COLORS[index % COLORS.length];
         
         return (
@@ -259,13 +267,6 @@ export const Dashboard = () => {
       </div>
 
       <div className="dashboard-grid" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-        <div className="card chart-card" style={{ flex: '1 1 400px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-            <h3 style={{ margin: 0, color: 'var(--color-text-main)' }}>Estructura de Gastos</h3>
-          </div>
-          <Chart transactions={transactions} filterMonth={filterMonth} filterYear={filterYear} totalExpense={currentStats.expense} renderAmount={renderAmount} />
-        </div>
-
         <div className="card contributor-card" style={{ flex: '1 1 300px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
           <h3 style={{ margin: '0 0 20px 0', color: 'var(--color-text-main)' }}>Gastos por Responsable (Pagado vs Deuda)</h3>
           {Object.keys(expensesByContributor).length === 0 ? (
@@ -322,6 +323,13 @@ export const Dashboard = () => {
               </li>
             </ul>
           )}
+        </div>
+
+        <div className="card chart-card" style={{ flex: '1 1 400px', backgroundColor: 'white', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ margin: 0, color: 'var(--color-text-main)' }}>Deuda por Categoría</h3>
+          </div>
+          <Chart transactions={transactions} filterMonth={filterMonth} filterYear={filterYear} totalExpense={currentStats.expense} renderAmount={renderAmount} />
         </div>
       </div>
     </div>
