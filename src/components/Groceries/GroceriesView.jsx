@@ -496,7 +496,7 @@ export const GroceriesView = () => {
               <p style={{ color: 'var(--color-text-secondary)', margin: 0 }}>Paga artículos en tu Lista de Mercado para sumarlos aquí automáticamente.</p>
             </div>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px', alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '15px', alignItems: 'start' }}>
               {Object.entries((inventory || []).reduce((acc, item) => {
                 const cat = item.category || 'Otros';
                 if (!acc[cat]) acc[cat] = [];
@@ -520,17 +520,17 @@ export const GroceriesView = () => {
                           {item.quantity <= 0 && <div style={{ fontSize: '0.75rem', color: '#ef4444', marginTop: '4px', fontWeight: 'bold' }}>Agotado</div>}
                         </div>
                         
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: 'var(--color-bg-deep)', padding: '4px', borderRadius: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'var(--color-bg-deep)', padding: '4px', borderRadius: '8px' }}>
                           <button 
                             onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
-                            style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)' }}
+                            style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0 }}
                           >
                             -
                           </button>
-                          <span style={{ fontWeight: 'bold', minWidth: '24px', textAlign: 'center', color: item.quantity > 0 ? 'var(--color-text-main)' : '#ef4444', fontSize: '0.95rem' }}>{item.quantity}</span>
+                          <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center', color: item.quantity > 0 ? 'var(--color-text-main)' : '#ef4444', fontSize: '0.9rem' }}>{item.quantity}</span>
                           <button 
                             onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
-                            style={{ width: '28px', height: '28px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)' }}
+                            style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0 }}
                           >
                             +
                           </button>
