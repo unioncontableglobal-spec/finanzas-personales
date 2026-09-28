@@ -49,6 +49,29 @@ export const FinanceProvider = ({ children }) => {
         setLoading(false);
         return;
       }
+
+      // Optimistic Loading (Caché local para que cargue en 0 segundos)
+      try {
+        const cached = localStorage.getItem('finance_cached_data');
+        if (cached) {
+          const data = JSON.parse(cached);
+          if (data.transactions) setTransactions(data.transactions);
+          if (data.cajas) setCajas(data.cajas);
+          if (data.budgets) setBudgets(data.budgets);
+          if (data.savings) setSavings(data.savings);
+          if (data.contributors) setContributors(data.contributors);
+          if (data.groceries) setGroceries(data.groceries);
+          if (data.projects) setProjects(data.projects);
+          if (data.categories && data.categories.length > 0) setCategories(data.categories);
+          if (data.appSettings) setAppSettings(data.appSettings);
+          if (data.groceriesCategories && data.groceriesCategories.length > 0) setGroceriesCategories(data.groceriesCategories);
+          
+          setLoading(false); // Quita la pantalla de carga instantáneamente
+        }
+      } catch(e) {
+        console.warn("Error leyendo caché", e);
+      }
+
       try {
         const res = await fetch(GAS_URL);
         const data = await res.json();
@@ -103,6 +126,20 @@ export const FinanceProvider = ({ children }) => {
           if (data.categories && data.categories.length > 0) setCategories(data.categories);
           if (data.appSettings) setAppSettings(data.appSettings);
           if (data.groceriesCategories && data.groceriesCategories.length > 0) setGroceriesCategories(data.groceriesCategories);
+          
+          // Actualizar la caché local con los datos frescos
+          localStorage.setItem('finance_cached_data', JSON.stringify({
+            transactions: loadedTxs,
+            cajas: loadedCajas,
+            budgets: data.budgets || budgets,
+            savings: loadedSavings,
+            contributors: data.contributors || contributors,
+            groceries: data.groceries || groceries,
+            projects: data.projects || projects,
+            categories: data.categories || categories,
+            appSettings: data.appSettings || appSettings,
+            groceriesCategories: data.groceriesCategories || groceriesCategories
+          }));
         }
       } catch (err) {
         console.error('Error fetching data:', err);
