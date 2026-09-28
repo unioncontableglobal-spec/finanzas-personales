@@ -153,11 +153,19 @@ export const FinanceProvider = ({ children }) => {
   const syncData = async (type, data) => {
     if (!GAS_URL || GAS_URL === 'TU_URL_DE_APPS_SCRIPT_AQUI') return;
 
+    let finalType = type;
+    let finalData = data;
+
+    if (['update_groceries', 'update_groceriesCategories', 'update_projects', 'update_cajas'].includes(type)) {
+      finalType = 'update_all';
+      finalData = { [type.replace('update_', '')]: data };
+    }
+
     try {
       await fetch(GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ type, data })
+        body: JSON.stringify({ type: finalType, data: finalData })
       });
     } catch (err) {
       console.error('Error sincronizando datos:', err);
