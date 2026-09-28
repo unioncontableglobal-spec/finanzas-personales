@@ -320,6 +320,17 @@ export const FinanceProvider = ({ children }) => {
     const finalTx = { ...oldTx, ...updatedTx };
     if (!finalTx.payments) finalTx.payments = [];
     
+    // Si la transacción tiene un solo pago (escenario estándar), sincronizamos el monto y la caja
+    // si el usuario los cambió en el formulario de edición.
+    if (finalTx.payments.length === 1) {
+      if (oldTx.amount === finalTx.payments[0].amount && finalTx.amount !== oldTx.amount) {
+        finalTx.payments[0].amount = finalTx.amount;
+      }
+      if (finalTx.originCaja && finalTx.originCaja !== finalTx.payments[0].cajaName) {
+        finalTx.payments[0].cajaName = finalTx.originCaja;
+      }
+    }
+    
     // Compatibilidad: si lo editaron y marcaron como isPaid sin payments, generamos uno
     if (finalTx.isPaid && finalTx.payments.length === 0 && finalTx.originCaja) {
       finalTx.payments = [{
