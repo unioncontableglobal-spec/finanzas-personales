@@ -1,0 +1,318 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --color-bg-main: #f0f4f8; /* Soft blue-gray */
+  --color-bg-card: #ffffff;
+  --color-bg-surface: #e2e8f0; /* Slightly darker for inner elements */
+  --color-bg-deep: #cbd5e1;
+  --color-text-main: #1e293b;
+  --color-text-secondary: #475569;
+  --color-border: #94a3b8;
+  
+  --color-primary: #2563eb; /* Warm bright blue */
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #0ea5e9; /* Sky blue */
+  --color-secondary-hover: #0284c7;
+  --color-secondary-light: #e0f2fe;
+  
+  --color-expense: #e11d48;
+  --color-income: #059669;
+
+  --font-family: 'Inter', sans-serif;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background: linear-gradient(135deg, #e0f2fe 0%, #bfdbfe 100%);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+.app-container {
+  min-height: 100vh;
+}
+
+/* Utilities */
+.card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary-light);
+  color: var(--color-secondary);
+}
+
+.btn-secondary:hover {
+  background-color: #dbeafe;
+}
+
+/* Layout */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  margin-bottom: 60px; /* Space for mobile nav */
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    margin-bottom: 0;
+    margin-left: 250px; /* Space for sidebar */
+  }
+}
+
+/* Formularios y Calendarios */
+.modern-input, .form-input, input[type="text"], input[type="number"], input[type="date"], input[type="month"], select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-sizing: border-box;
+}
+
+.modern-input:focus, .form-input:focus, input:focus, select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-secondary-light);
+}
+
+/* Personalizar icono de calendario nativo */
+::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.4) sepia(1) hue-rotate(180deg) saturate(4) opacity(0.7);
+  transition: opacity 0.2s;
+}
+
+::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ==========================================
+   ESTILOS DE IMPRESIÓN Y PDF PROFESIONAL
+   ========================================== */
+@media print {
+  /* 1. Ocultar todos los elementos de navegación y formularios de edición */
+  .sidebar,
+  .mobile-nav,
+  .no-print,
+  .page-title,
+  .page-subtitle,
+  .filters,
+  form,
+  button,
+  .submit-btn,
+  .btn,
+  select,
+  input,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  /* 2. Formato de encabezado corporativo impreso */
+  .print-only-header {
+    display: flex !important;
+    flex-direction: column !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 2px solid #2563eb !important;
+  }
+
+  .print-only-header h1 {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #1e3a8a !important;
+    margin: 0 0 4px 0 !important;
+  }
+
+  .print-only-header p {
+    font-size: 0.9rem !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+
+  /* 3. Reset total de fondo a blanco limpio */
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 10.5pt !important;
+    line-height: 1.4 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .app-container {
+    display: block !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 4. Estilos de Tarjetas e Indicadores KPI */
+  .card,
+  .section-card,
+  [class*="card"] {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    padding: 12px 16px !important;
+    margin-bottom: 12px !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 5. Asegurar visibilidad de colores de tarjetas KPI */
+  div[style*="linear-gradient"],
+  div[style*="background"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 6. Formato de grillas en columnas limpias */
+  [style*="gridTemplateColumns"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+
+  [style*="gridTemplateColumns"] > div {
+    flex: 1 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 7. Evitar saltos de página dentro de listas o personas */
+  .transaction-item,
+  .budget-person-group,
+  [style*="borderLeft"] {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 8. Configuración de página carta / A4 */
+  @page {
+    margin: 1.2cm;
+    size: letter;
+  }
+
+  /* ==========================================
+     AJUSTE DE 1 SOLA HOJA PARA EL MÓDULO DE PRESUPUESTOS
+     ========================================== */
+  #printable-budget {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 8.5pt !important;
+    line-height: 1.25 !important;
+  }
+
+  #printable-budget .print-only-header {
+    margin-bottom: 8px !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1.5px solid #2563eb !important;
+  }
+
+  #printable-budget .print-only-header h1 {
+    font-size: 1.25rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  #printable-budget .print-only-header p {
+    font-size: 0.8rem !important;
+  }
+
+  #printable-budget [style*="gridTemplateColumns"] {
+    margin-bottom: 10px !important;
+    gap: 8px !important;
+  }
+
+  #printable-budget [style*="gridTemplateColumns"] > div {
+    padding: 8px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  #printable-budget [style*="gridTemplateColumns"] div[style*="fontSize: 1.3rem"] {
+    font-size: 1.1rem !important;
+  }
+
+  #printable-budget .card {
+    padding: 10px 12px !important;
+    margin-bottom: 8px !important;
+    border-radius: 8px !important;
+  }
+
+  #printable-budget h3 {
+    font-size: 1rem !important;
+    margin-bottom: 6px !important;
+    padding-bottom: 4px !important;
+  }
+
+  #printable-budget h4 {
+    font-size: 0.82rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  #printable-budget div[style*="padding: 10px 14px"],
+  #printable-budget div[style*="padding: 8px 14px"] {
+    padding: 4px 8px !important;
+    margin-bottom: 3px !important;
+  }
+
+  #printable-budget div[style*="gap: 30px"] {
+    gap: 10px !important;
+  }
+
+  #printable-budget div[style*="marginBottom: 20px"] {
+    margin-bottom: 8px !important;
+  }
+
+  @page {
+    margin: 0.8cm 1cm;
+    size: letter portrait;
+  }
+}

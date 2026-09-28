@@ -1,0 +1,86 @@
+/* Layout.css */
+
+.sidebar {
+  display: none;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 2rem 1rem;
+}
+
+.sidebar-logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover, .nav-item.active {
+  background-color: var(--color-primary-hover);
+  color: white;
+}
+
+.bottom-nav {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+.bottom-nav .nav-item {
+  flex: 1;
+  flex-direction: column;
+  gap: 0.25rem;
+  color: var(--color-text-secondary);
+  border-radius: 0;
+  padding: 0.75rem 0;
+  font-size: 0.75rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-nav .nav-item.active {
+  color: var(--color-primary);
+  background: transparent;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+  .bottom-nav {
+    display: none;
+  }
+}

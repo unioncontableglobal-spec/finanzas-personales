@@ -1,0 +1,115 @@
+/* TransactionFormModal.css */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-bg-card);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+}
+
+.close-btn:hover {
+  color: var(--color-text-main);
+}
+
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.type-toggle {
+  display: flex;
+  background-color: var(--color-bg-main);
+  border-radius: 8px;
+  padding: 0.25rem;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: all 0.2s;
+}
+
+.toggle-btn.expense-active {
+  background-color: white;
+  color: var(--color-expense);
+  box-shadow: var(--shadow-sm);
+}
+
+.toggle-btn.income-active {
+  background-color: white;
+  color: var(--color-income);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.form-group input, .form-group select {
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+}
+
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--color-secondary);
+}
+
+.submit-btn {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+}

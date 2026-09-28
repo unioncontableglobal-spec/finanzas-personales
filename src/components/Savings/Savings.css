@@ -1,0 +1,115 @@
+/* Savings.css */
+
+.savings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.total-savings-card {
+  background: linear-gradient(135deg, var(--color-primary), #3b82f6);
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  border: none;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.total-savings-card h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  opacity: 0.9;
+}
+
+.total-amount {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+.savings-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .savings-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.savings-card {
+  border-top: 4px solid var(--color-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.savings-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.savings-card-header h4 {
+  font-size: 1rem;
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+.savings-balance {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.savings-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.btn-sm {
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+}
+
+.btn-outline:hover {
+  background: var(--color-bg-main);
+}
+
+.deposit-btn {
+  color: var(--color-income);
+  border-color: var(--color-income);
+}
+
+.deposit-btn:hover {
+  background-color: #d1fae5;
+}
+
+.withdraw-btn {
+  color: var(--color-expense);
+  border-color: var(--color-expense);
+}
+
+.withdraw-btn:hover {
+  background-color: #fee2e2;
+}
+
+.savings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
