@@ -38,7 +38,7 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
   const pendingRest = pendingGroceriesTotal.rest || 0;
 
   if (pendingSalud > 0) {
-    data.push({ name: 'Mercado Estimado (Salud/Medicinas)', value: pendingSalud });
+    data.push({ name: 'Mercado Estimado (Medicinas)', value: pendingSalud });
   }
   if (pendingRest > 0) {
     data.push({ name: 'Mercado Estimado (General)', value: pendingRest });
