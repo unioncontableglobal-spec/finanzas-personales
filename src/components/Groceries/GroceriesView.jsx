@@ -20,7 +20,7 @@ export const GroceriesView = () => {
   
   const [singleItemToPay, setSingleItemToPay] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [viewMode, setViewMode] = useState('mercado'); // 'mercado' or 'inventario'
+  const [viewMode, setViewMode] = useState('inventario'); // 'inventario' or 'mercado'
 
   useEffect(() => {
     if (!selectedCaja && availableCajas.length > 0) {
@@ -172,22 +172,24 @@ export const GroceriesView = () => {
 
   return (
     <div className="section-card" id="printable-groceries">
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px' }}>
-        <button 
-          onClick={() => setViewMode('mercado')}
-          style={{ 
-            background: 'none', border: 'none', fontSize: '1.1rem', fontWeight: viewMode === 'mercado' ? 'bold' : 'normal', 
-            color: viewMode === 'mercado' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px' 
-          }}>
-          Lista de Compras
-        </button>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', flexWrap: 'wrap' }}>
         <button 
           onClick={() => setViewMode('inventario')}
           style={{ 
             background: 'none', border: 'none', fontSize: '1.1rem', fontWeight: viewMode === 'inventario' ? 'bold' : 'normal', 
-            color: viewMode === 'inventario' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px' 
+            color: viewMode === 'inventario' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px',
+            borderBottom: viewMode === 'inventario' ? '3px solid var(--color-primary)' : '3px solid transparent'
           }}>
-          Inventario de Despensa
+          📦 Inventario de Despensa
+        </button>
+        <button 
+          onClick={() => setViewMode('mercado')}
+          style={{ 
+            background: 'none', border: 'none', fontSize: '1.1rem', fontWeight: viewMode === 'mercado' ? 'bold' : 'normal', 
+            color: viewMode === 'mercado' ? 'var(--color-primary)' : 'var(--color-text-secondary)', cursor: 'pointer', padding: '10px',
+            borderBottom: viewMode === 'mercado' ? '3px solid var(--color-primary)' : '3px solid transparent'
+          }}>
+          🛒 Lista de Compras
         </button>
       </div>
 
@@ -512,54 +514,80 @@ export const GroceriesView = () => {
                       {items.length} prod.
                     </span>
                   </div>
-                  <div style={{ padding: '10px' }}>
-                    {items.sort((a, b) => a.name.localeCompare(b.name)).map((item, index) => (
-                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 5px', borderBottom: index < items.length - 1 ? '1px solid var(--color-border)' : 'none' }}>
-                        <div style={{ flex: 1, paddingRight: '10px' }}>
-                          <div style={{ fontWeight: '600', color: 'var(--color-text-main)', fontSize: '0.9rem', lineHeight: '1.2' }}>{item.name}</div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-                            <select 
-                              value={item.category || 'Otros'}
-                              onChange={(e) => updateInventoryItem(item.id, { category: e.target.value })}
-                              style={{
-                                fontSize: '0.75rem',
-                                padding: '2px 4px',
-                                borderRadius: '4px',
-                                backgroundColor: 'var(--color-bg-deep)',
-                                border: '1px solid var(--color-border)',
-                                color: 'var(--color-text-secondary)',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              {(groceriesCategories || []).map(cat => (
-                                <option key={cat.id} value={cat.name}>{cat.name}</option>
-                              ))}
-                              {!groceriesCategories?.some(c => c.name === 'Otros') && <option value="Otros">Otros</option>}
-                            </select>
-                            {item.quantity <= 0 && <span style={{ fontSize: '0.75rem', color: '#ef4444', fontWeight: 'bold' }}>Agotado</span>}
+                  <div style={{ padding: '0' }}>
+                    {items.sort((a, b) => a.name.localeCompare(b.name)).map((item, index) => {
+                      const isAgotado = item.quantity <= 0;
+                      return (
+                        <div key={item.id} style={{ 
+                          display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', padding: '15px 12px', 
+                          borderBottom: index < items.length - 1 ? '1px solid var(--color-border)' : 'none',
+                          backgroundColor: isAgotado ? 'var(--color-bg-main)' : 'transparent',
+                          opacity: isAgotado ? 0.75 : 1,
+                          transition: 'all 0.2s ease',
+                        }}>
+                          <div style={{ flex: '1 1 180px', paddingRight: '5px' }}>
+                            <div style={{ 
+                              fontWeight: '600', 
+                              color: isAgotado ? 'var(--color-text-secondary)' : 'var(--color-text-main)', 
+                              fontSize: '0.95rem', 
+                              lineHeight: '1.3',
+                              textDecoration: isAgotado ? 'line-through' : 'none',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '8px'
+                            }}>
+                              {item.name}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px', flexWrap: 'wrap' }}>
+                              <select 
+                                value={item.category || 'Otros'}
+                                onChange={(e) => updateInventoryItem(item.id, { category: e.target.value })}
+                                style={{
+                                  fontSize: '0.75rem', padding: '4px 8px', borderRadius: '6px',
+                                  backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)',
+                                  color: 'var(--color-text-secondary)', cursor: 'pointer', outline: 'none'
+                                }}
+                              >
+                                {(groceriesCategories || []).map(cat => (
+                                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                ))}
+                                {!groceriesCategories?.some(c => c.name === 'Otros') && <option value="Otros">Otros</option>}
+                              </select>
+                              {isAgotado && (
+                                <span style={{ 
+                                  fontSize: '0.7rem', backgroundColor: '#fee2e2', color: '#ef4444', 
+                                  padding: '4px 8px', borderRadius: '999px', fontWeight: 'bold', border: '1px solid #fca5a5',
+                                  display: 'inline-flex', alignItems: 'center', gap: '4px'
+                                }}>
+                                  <AlertTriangle size={12} /> AGOTADO
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '2px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', padding: '4px', borderRadius: '10px' }}>
+                              <button 
+                                onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
+                                style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: isAgotado ? 'var(--color-border)' : 'var(--color-bg-card)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0, boxShadow: isAgotado ? 'none' : '0 1px 2px rgba(0,0,0,0.05)' }}
+                              >
+                                -
+                              </button>
+                              <span style={{ fontWeight: 'bold', minWidth: '28px', textAlign: 'center', color: isAgotado ? '#ef4444' : 'var(--color-primary)', fontSize: '1rem' }}>{item.quantity}</span>
+                              <button 
+                                onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
+                                style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'var(--color-bg-card)', border: 'none', fontSize: '1.2rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0, boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <button onClick={() => deleteInventoryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: '#fee2e2', border: 'none', borderRadius: '10px', width: '40px', height: '40px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}>
+                              <Trash2 size={18} />
+                            </button>
                           </div>
                         </div>
-                        
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', backgroundColor: 'var(--color-bg-deep)', padding: '4px', borderRadius: '8px' }}>
-                          <button 
-                            onClick={() => updateInventoryItem(item.id, { quantity: Math.max(0, (item.quantity || 0) - 1) })}
-                            style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0 }}
-                          >
-                            -
-                          </button>
-                          <span style={{ fontWeight: 'bold', minWidth: '20px', textAlign: 'center', color: item.quantity > 0 ? 'var(--color-text-main)' : '#ef4444', fontSize: '0.9rem' }}>{item.quantity}</span>
-                          <button 
-                            onClick={() => updateInventoryItem(item.id, { quantity: (item.quantity || 0) + 1 })}
-                            style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: 'var(--color-bg-surface)', border: '1px solid var(--color-border)', fontSize: '1rem', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'var(--color-text-main)', padding: 0 }}
-                          >
-                            +
-                          </button>
-                          <button onClick={() => deleteInventoryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', marginLeft: '2px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Trash2 size={16} />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               ))}
