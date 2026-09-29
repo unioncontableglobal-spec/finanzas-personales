@@ -450,7 +450,7 @@ export const ExpensesView = () => {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
               }}>
                 <div style={{ flex: '1 1 200px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
                     <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#92400e', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <ShoppingCart size={18} color="#d97706" /> Mercado: Lista de Compras Pendiente
                     </h4>
@@ -475,7 +475,7 @@ export const ExpensesView = () => {
             {pendingExpenses.map(p => (
               <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', backgroundColor: 'var(--color-bg-card)', padding: '15px 20px', borderRadius: '12px', borderLeft: '4px solid #f59e0b', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
                 <div style={{ flex: '1 1 200px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px', flexWrap: 'wrap' }}>
                     <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--color-text-main)', fontWeight: '600' }}>{p.description || 'Sin descripción'}</h4>
                     <span style={{ fontSize: '0.75rem', padding: '2px 8px', backgroundColor: 'var(--color-bg-surface)', color: 'var(--color-text-secondary)', borderRadius: '999px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <Tag size={12} /> {p.category}
@@ -547,7 +547,7 @@ export const ExpensesView = () => {
             {paidExpenses.map(p => (
               <div key={p.paymentId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', backgroundColor: 'var(--color-bg-surface)', padding: '12px 20px', borderRadius: '10px', opacity: 0.85, border: '1px solid var(--color-border)' }}>
                 <div style={{ flex: '1 1 200px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
                     <h4 style={{ margin: 0, color: 'var(--color-text-main)' }}>{p.description || p.category}</h4>
                     <span style={{ fontSize: '0.75rem', padding: '2px 8px', backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text-secondary)', borderRadius: '999px' }}>
                       Categoría: {p.category}
