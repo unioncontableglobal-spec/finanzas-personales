@@ -439,7 +439,7 @@ export const GroceriesView = () => {
           }
           
           return itemsToRender.map(item => (
-            <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '15px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '8px', borderLeft: item.checked ? '4px solid #22c55e' : '4px solid transparent' }}>
+            <div key={item.id} style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '15px', padding: '15px', backgroundColor: 'var(--color-bg-surface)', borderRadius: '8px', borderLeft: item.checked ? '4px solid #22c55e' : '4px solid transparent' }}>
               <button 
                 onClick={() => toggleGroceryItem(item.id)}
                 className="no-print"
@@ -448,7 +448,7 @@ export const GroceriesView = () => {
                 {item.checked ? <CheckCircle size={24} /> : <Circle size={24} />}
               </button>
               
-              <div style={{ flex: 1, textDecoration: item.checked ? 'line-through' : 'none', opacity: item.checked ? 0.6 : 1 }}>
+              <div style={{ flex: '1 1 180px', textDecoration: item.checked ? 'line-through' : 'none', opacity: item.checked ? 0.6 : 1 }}>
                 <div style={{ fontWeight: '500', color: 'var(--color-text-main)' }}>{item.name} <span style={{fontSize: '0.75rem', backgroundColor: 'var(--color-bg-deep)', padding: '2px 6px', borderRadius: '4px', color: 'var(--color-text-secondary)', marginLeft: '6px'}}>{item.category}</span></div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px', flexWrap: 'wrap' }}>
                   <span>Ref: {renderAmount(item.price)} c/u</span>
