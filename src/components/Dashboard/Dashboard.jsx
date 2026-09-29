@@ -12,7 +12,7 @@ const getAccountStyle = (id) => {
   return 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)'; // Kontigo
 };
 
-export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, renderAmount }) => {
+export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, renderAmount, pendingGroceriesTotal = 0 }) => {
   const expensesThisMonth = transactions.filter(t => {
     const d = new Date(t.date);
     return t.type === 'expense' && d.getMonth() === filterMonth && d.getFullYear() === filterYear;
@@ -33,6 +33,10 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
     }
     return acc;
   }, []);
+
+  if (pendingGroceriesTotal > 0) {
+    data.push({ name: 'Mercado Estimado', value: pendingGroceriesTotal });
+  }
 
   const totalPendingInCategories = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -336,7 +340,7 @@ export const Dashboard = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <h3 style={{ margin: 0, color: 'var(--color-text-main)' }}>Deuda por Categoría</h3>
           </div>
-          <Chart transactions={transactions} filterMonth={filterMonth} filterYear={filterYear} totalExpense={currentStats.expense} renderAmount={renderAmount} />
+          <Chart transactions={transactions} filterMonth={filterMonth} filterYear={filterYear} totalExpense={currentStats.expense} renderAmount={renderAmount} pendingGroceriesTotal={pendingGroceriesTotal} />
         </div>
       </div>
     </div>
