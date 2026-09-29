@@ -134,7 +134,11 @@ export const Dashboard = () => {
 
   // === NEW KPIs ===
   const pendingGroceriesTotal = useMemo(() => {
-    return (groceries || []).filter(g => !g.checked).reduce((sum, g) => sum + (g.price || 0), 0);
+    return (groceries || []).filter(g => !g.checked).reduce((sum, g) => {
+      const p = parseFloat(g.price) || 0;
+      const q = parseFloat(g.quantity) || 1;
+      return sum + (p * q);
+    }, 0);
   }, [groceries]);
 
   const totalPendingDebts = useMemo(() => {
@@ -261,6 +265,9 @@ export const Dashboard = () => {
             <p style={{ fontSize: '0.85rem', fontWeight: '600', color: '#d97706', margin: 0, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Por Pagar</p>
           </div>
           <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#b45309' }}>{renderAmount(totalPendingDebts)}</p>
+          <div style={{ fontSize: '0.75rem', color: '#b45309', fontWeight: '600' }}>
+            Incluye {renderAmount(pendingGroceriesTotal)} de mercado estimado
+          </div>
         </div>
 
 

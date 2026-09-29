@@ -217,7 +217,7 @@ export const ExpensesView = () => {
   };
 
   return (
-    <div style={{ maxWidth: '850px', margin: '0 auto', paddingBottom: '30px' }} id="printable-expenses">
+    <div style={{ maxWidth: '850px', margin: '0 auto', paddingBottom: '80px' }} id="printable-expenses">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: 'var(--color-text-main)', margin: '0 0 5px 0' }}>Gastos y Deudas</h2>
@@ -329,7 +329,7 @@ export const ExpensesView = () => {
 
       {/* === RESUMEN DE TOTALES === */}
       <div style={{
-        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px',
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px',
         marginBottom: '25px'
       }}>
         {/* Total Pendientes */}
@@ -444,12 +444,12 @@ export const ExpensesView = () => {
             {/* ÍTEM ESPECIAL: MERCADO PENDIENTE */}
             {totals.includeGroceriesInPending && pendingGroceriesTotal > 0 && (
               <div style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px',
                 backgroundColor: '#fffbeb', padding: '15px 20px', borderRadius: '12px',
                 borderLeft: '4px solid #f59e0b', border: '1px solid #fde68a',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
               }}>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: '1 1 200px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
                     <h4 style={{ margin: 0, fontSize: '1.1rem', color: '#92400e', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <ShoppingCart size={18} color="#d97706" /> Mercado: Lista de Compras Pendiente
@@ -473,8 +473,8 @@ export const ExpensesView = () => {
 
             {/* DEUDAS Y GASTOS PENDIENTES TRADICIONALES */}
             {pendingExpenses.map(p => (
-              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-bg-card)', padding: '15px 20px', borderRadius: '12px', borderLeft: '4px solid #f59e0b', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
-                <div style={{ flex: 1 }}>
+              <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', backgroundColor: 'var(--color-bg-card)', padding: '15px 20px', borderRadius: '12px', borderLeft: '4px solid #f59e0b', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                <div style={{ flex: '1 1 200px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
                     <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--color-text-main)', fontWeight: '600' }}>{p.description || 'Sin descripción'}</h4>
                     <span style={{ fontSize: '0.75rem', padding: '2px 8px', backgroundColor: 'var(--color-bg-surface)', color: 'var(--color-text-secondary)', borderRadius: '999px', display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -487,7 +487,7 @@ export const ExpensesView = () => {
                   </div>
                 </div>
                 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
                   <div style={{ textAlign: 'right' }}>
                     <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--color-text-main)' }}>
                       {(() => {
@@ -545,8 +545,8 @@ export const ExpensesView = () => {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {paidExpenses.map(p => (
-              <div key={p.paymentId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--color-bg-surface)', padding: '12px 20px', borderRadius: '10px', opacity: 0.85, border: '1px solid var(--color-border)' }}>
-                <div style={{ flex: 1 }}>
+              <div key={p.paymentId} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', backgroundColor: 'var(--color-bg-surface)', padding: '12px 20px', borderRadius: '10px', opacity: 0.85, border: '1px solid var(--color-border)' }}>
+                <div style={{ flex: '1 1 200px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <h4 style={{ margin: 0, color: 'var(--color-text-main)' }}>{p.description || p.category}</h4>
                     <span style={{ fontSize: '0.75rem', padding: '2px 8px', backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text-secondary)', borderRadius: '999px' }}>

@@ -17,7 +17,8 @@ export const CajasView = () => {
     deleteCaja,
     renameCaja,
     savings,
-    updateSavings
+    updateSavings,
+    groceries
   } = useContext(FinanceContext);
 
   const [selectedResponsibles, setSelectedResponsibles] = useState(['Común']);
@@ -201,6 +202,21 @@ export const CajasView = () => {
     });
     return Object.entries(desglose).sort((a, b) => b[1] - a[1]);
   }, [myExpensePayments]);
+
+  const pendingGroceriesByCategory = useMemo(() => {
+    if (!groceries) return [];
+    const pending = groceries.filter(g => !g.checked);
+    const byCategory = pending.reduce((acc, g) => {
+      const cat = g.category || 'Otros';
+      const p = parseFloat(g.price) || 0;
+      const q = parseFloat(g.quantity) || 1;
+      acc[cat] = (acc[cat] || 0) + (p * q);
+      return acc;
+    }, {});
+    return Object.entries(byCategory).sort((a, b) => b[1] - a[1]);
+  }, [groceries]);
+
+  const totalPendingGroceries = pendingGroceriesByCategory.reduce((sum, [, amt]) => sum + amt, 0);
 
   const handlePrint = () => window.print();
 
@@ -508,6 +524,38 @@ export const CajasView = () => {
             <div className="total-amounts">
               <div className="main-amount">{renderAmount(totalPorPagar)}</div>
               <div className="sub-amount" style={{ color: '#ef4444' }}>{renderSecondaryAmount(totalPorPagar)}</div>
+            </div>
+          </div>
+
+          {/* Mercado Estimado (Por Comprar) */}
+          <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--color-text-secondary)', marginBottom: '10px', textTransform: 'uppercase' }}>
+              Mercado Estimado (Por Comprar)
+            </div>
+            {pendingGroceriesByCategory.length > 0 ? (
+              pendingGroceriesByCategory.map(([cat, amt]) => (
+                <div className="list-item" key={cat}>
+                  <div className="item-info">
+                    <h4>{cat}</h4>
+                  </div>
+                  <div className="item-amounts">
+                    <div style={{ textAlign: 'right' }}>
+                      <div className="main-amount" style={{ color: '#f59e0b' }}>{renderAmount(amt)}</div>
+                      <div className="sub-amount">{renderSecondaryAmount(amt)}</div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', fontStyle: 'italic', paddingLeft: '5px' }}>
+                No hay productos en la lista de mercado.
+              </p>
+            )}
+            <div className="total-row" style={{ marginTop: '10px', backgroundColor: 'transparent', padding: '0', border: 'none' }}>
+              <h3 style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)' }}>Total Mercado</h3>
+              <div className="total-amounts">
+                <div className="main-amount" style={{ fontSize: '1.1rem', color: '#f59e0b' }}>{renderAmount(totalPendingGroceries)}</div>
+              </div>
             </div>
           </div>
 

@@ -147,6 +147,7 @@ body {
 .main-content {
   flex: 1;
   padding: 1rem;
+  padding-top: 4.5rem; /* Avoid overlap with CurrencyToggle fixed top */
   margin-bottom: calc(80px + env(safe-area-inset-bottom));
 }
 
@@ -155,6 +156,7 @@ body {
     margin-bottom: 0;
     margin-left: 260px; /* Space for sidebar */
     padding: 2.5rem 3rem;
+    padding-top: 2.5rem; /* Reset for desktop */
     max-width: 1600px; /* Prevent it from getting too wide on ultrawide monitors */
     margin-right: auto;
   }
