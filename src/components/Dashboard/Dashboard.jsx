@@ -34,8 +34,14 @@ export const Chart = ({ transactions, filterMonth, filterYear, totalExpense, ren
     return acc;
   }, []);
 
-  if (pendingGroceriesTotal > 0) {
-    data.push({ name: 'Mercado Estimado', value: pendingGroceriesTotal });
+  const pendingSalud = pendingGroceriesTotal.salud || 0;
+  const pendingRest = pendingGroceriesTotal.rest || 0;
+
+  if (pendingSalud > 0) {
+    data.push({ name: 'Mercado Estimado (Salud/Medicinas)', value: pendingSalud });
+  }
+  if (pendingRest > 0) {
+    data.push({ name: 'Mercado Estimado (General)', value: pendingRest });
   }
 
   const totalPendingInCategories = data.reduce((sum, item) => sum + item.value, 0);
@@ -138,18 +144,25 @@ export const Dashboard = () => {
 
   // === NEW KPIs ===
   const pendingGroceriesTotal = useMemo(() => {
-    return (groceries || []).filter(g => !g.checked).reduce((sum, g) => {
+    return (groceries || []).filter(g => !g.checked).reduce((acc, g) => {
       const p = parseFloat(g.price) || 0;
       const q = parseFloat(g.quantity) || 1;
-      return sum + (p * q);
-    }, 0);
+      const amount = p * q;
+      acc.total += amount;
+      if (g.category === 'Salud' || g.category === 'Medicinas') {
+        acc.salud += amount;
+      } else {
+        acc.rest += amount;
+      }
+      return acc;
+    }, { total: 0, salud: 0, rest: 0 });
   }, [groceries]);
 
   const totalPendingDebts = useMemo(() => {
     const basePending = transactions
       .filter(t => t.type === 'expense' && !t.isPaid)
       .reduce((s, t) => s + (t.amount || 0), 0);
-    return basePending + pendingGroceriesTotal;
+    return basePending + pendingGroceriesTotal.total;
   }, [transactions, pendingGroceriesTotal]);
 
   const totalPatrimony = useMemo(() => {
@@ -270,7 +283,7 @@ export const Dashboard = () => {
           </div>
           <p style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', fontWeight: '800', margin: 0, color: '#b45309' }}>{renderAmount(totalPendingDebts)}</p>
           <div style={{ fontSize: '0.75rem', color: '#b45309', fontWeight: '600' }}>
-            Incluye {renderAmount(pendingGroceriesTotal)} de mercado estimado
+            Incluye {renderAmount(pendingGroceriesTotal.total)} de mercado estimado
           </div>
         </div>
 

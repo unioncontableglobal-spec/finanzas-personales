@@ -488,6 +488,12 @@ export const FinanceProvider = ({ children }) => {
     setGroceries(newGroceries);
     syncData('update_groceries', newGroceries);
   };
+
+  const updateGroceryItem = (id, updates) => {
+    const newGroceries = groceries.map(g => g.id === id ? { ...g, ...updates } : g);
+    setGroceries(newGroceries);
+    syncData('update_groceries', newGroceries);
+  };
   
   const toggleGroceryItem = (id) => {
     const newGroceries = groceries.map(g => g.id === id ? { ...g, checked: !g.checked } : g);
@@ -612,7 +618,7 @@ export const FinanceProvider = ({ children }) => {
       cajas, updateCaja, deleteCaja, renameCaja,
       contributors, addContributor, deleteContributor,
       groceriesCategories, addGroceryCategory, updateGroceryCategory, deleteGroceryCategory,
-      groceries, addGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries,
+      groceries, addGroceryItem, updateGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries,
       inventory, addInventoryItem, updateInventoryItem, deleteInventoryItem,
       projects, addProject, deleteProject, renameProject, addProjectItem, deleteProjectItem,
       categories, addCategory, updateCategory, deleteCategory,

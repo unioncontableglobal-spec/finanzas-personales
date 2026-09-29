@@ -1,9 +1,9 @@
 import React, { useContext, useState, useMemo, useEffect } from 'react';
 import { FinanceContext } from '../../context/FinanceContext';
-import { Trash2, Plus, CheckCircle, Circle, AlertTriangle, X, Printer, Package } from 'lucide-react';
+import { Trash2, Plus, CheckCircle, Circle, AlertTriangle, X, Printer, Package, Edit2 } from 'lucide-react';
 
 export const GroceriesView = () => {
-  const { groceries, groceriesCategories, budgets, addGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries, addTransaction, appSettings, cajas, contributors, inventory, addInventoryItem, updateInventoryItem, deleteInventoryItem } = useContext(FinanceContext);
+  const { groceries, groceriesCategories, budgets, addGroceryItem, updateGroceryItem, toggleGroceryItem, deleteGroceryItem, clearCheckedGroceries, addTransaction, appSettings, cajas, contributors, inventory, addInventoryItem, updateInventoryItem, deleteInventoryItem } = useContext(FinanceContext);
   
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -21,6 +21,7 @@ export const GroceriesView = () => {
   const [singleItemToPay, setSingleItemToPay] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [viewMode, setViewMode] = useState('inventario'); // 'inventario' or 'mercado'
+  const [editingGroceryItem, setEditingGroceryItem] = useState(null);
 
   useEffect(() => {
     if (!selectedCaja && availableCajas.length > 0) {
@@ -470,6 +471,14 @@ export const GroceriesView = () => {
                 >
                   Pagar
                 </button>
+                <button 
+                  onClick={() => {
+                    setEditingGroceryItem(item);
+                  }}
+                  className="no-print" style={{ color: '#3b82f6', background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}
+                >
+                  <Edit2 size={18} />
+                </button>
                 <button onClick={() => deleteGroceryItem(item.id)} className="no-print" style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', padding: '5px' }}>
                   <Trash2 size={20} />
                 </button>
@@ -478,6 +487,54 @@ export const GroceriesView = () => {
           ));
         })()}
       </div>
+      
+      {/* Modal Editar Item */}
+      {editingGroceryItem && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
+          <div className="card" style={{ padding: '25px', width: '90%', maxWidth: '400px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0 }}>Editar Artículo</h3>
+              <button onClick={() => setEditingGroceryItem(null)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={20}/></button>
+            </div>
+            
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Nombre</label>
+              <input type="text" className="modern-input" style={{ width: '100%' }} value={editingGroceryItem.name} onChange={e => setEditingGroceryItem({...editingGroceryItem, name: e.target.value})} />
+            </div>
+            
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Precio (USD)</label>
+                <input type="number" step="0.01" className="modern-input" style={{ width: '100%' }} value={editingGroceryItem.price} onChange={e => setEditingGroceryItem({...editingGroceryItem, price: parseFloat(e.target.value) || 0})} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ display: 'block', marginBottom: '5px' }}>Cantidad</label>
+                <input type="number" min="1" className="modern-input" style={{ width: '100%' }} value={editingGroceryItem.quantity || 1} onChange={e => setEditingGroceryItem({...editingGroceryItem, quantity: parseInt(e.target.value) || 1})} />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '15px' }}>
+              <label style={{ display: 'block', marginBottom: '5px' }}>Categoría</label>
+              <select className="modern-input" style={{ width: '100%' }} value={editingGroceryItem.category} onChange={e => setEditingGroceryItem({...editingGroceryItem, category: e.target.value})}>
+                {groceriesCategories.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+              <button onClick={() => setEditingGroceryItem(null)} className="btn" style={{ background: 'transparent' }}>Cancelar</button>
+              <button onClick={() => {
+                updateGroceryItem(editingGroceryItem.id, {
+                  name: editingGroceryItem.name,
+                  price: editingGroceryItem.price,
+                  quantity: editingGroceryItem.quantity,
+                  category: editingGroceryItem.category
+                });
+                setEditingGroceryItem(null);
+              }} className="btn btn-primary" style={{ backgroundColor: '#3b82f6', color: 'white' }}>Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+      )}
         </>
       )}
 
